@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Messagerie</title>
+<link rel="stylesheet" href="./css/styles.css">
+<link href="https://fonts.googleapis.com/css?family=Raleway:400,400italic,700,700italic" rel="stylesheet" type="text/css">
+<script src="./js/jquery-3.0.0.js"></script>
+<script src="./js/dexie.js"></script>
+<script src="./js/db.js"></script>
+<script src="./js/global.js"></script>
+</head>
+
+<body>
+<form method="post" id="form-login" action="./contacts.html">
+	<h1>Messagerie</h1>
+	<fieldset>
+		<label>Login</label>
+		<input type="text" name="email" placeholder="Votre identifiant" value="lparent@test.fr" />
+	</fieldset>
+	<fieldset>
+		<label>Password</label>
+		<input type="password" name="password" placeholder="Votre mot de passe" value="test" />
+	</fieldset>
+	<fieldset>
+		<input type="submit" value="Login" />
+	</fieldset>
+	<p id="erreur"></p>
+</form>
+<script>
+$( "#form-login" ).submit(function( event ) {
+	event.preventDefault();
+	var params = $( this ).serialize();
+	var uri = "http://192.168.9.135/login.php";
+	$.get( uri, params )
+		.done(function( data ) {
+			if( data.error ){
+				alert("BUGGGGGGGGGGG !");
+				return;
+			}
+			sessionStorage.token = data.token;
+			//$(location).attr('href',"./contacts.html");
+			$( "#form-login" ).unbind("submit").submit();
+		})
+		.fail(function( data, status, erreur ) {
+			$("#erreur").html("Erreur de connexion");
+		});
+	});
+</script>
+</body>
+</html>

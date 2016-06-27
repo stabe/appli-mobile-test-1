@@ -1,0 +1,100 @@
+*{
+	color:black;
+	font-family: 'Raleway', sans-serif;
+	margin:0;
+	padding:0;
+}
+body{
+	margin:25px;
+}
+h1{
+	color:black;
+	font-size:16px;	
+	text-align:center;
+}
+#form-login{
+	border:1px solid grey;
+	margin:0 auto;
+	max-width:400px;
+	padding:25px;
+}
+fieldset{
+	border:none;
+	padding:10px;
+}
+label, input{
+	font-size:12px;
+	width:100%;
+}
+input[type=submit]{
+	background-color:#C8C8C8;
+	border:none;
+	font-weight:bold;
+	padding:5px;
+	text-transform:uppercase;
+}
+input[type=submit]:hover{
+	background-color:#A4A4A4;
+	cursor:pointer;
+}
+#erreur{
+	color:red;
+	text-align:center;
+}
+#retour{
+	background-color:#A4A4A4;
+	margin-bottom:25px;
+	padding:10px;
+}
+#retour span{
+	float:left;
+}
+.contact:hover{
+	cursor:pointer;
+}
+.contact:not(:last-child){
+	border-bottom:1px solid black;
+	margin-bottom:15px;
+	padding:5px 0;
+}
+.contact h2{
+	font-size:14px;
+}
+.contact p{
+	font-size:12px;
+}
+.contact p.date{
+	text-align:right;
+}
+
+#intervenants{
+	font-size:12px;
+	font-style:italic;
+	font-weight:bold;
+}
+.conversation{
+	text-align:right;
+}
+.conversation:not(:last-child){
+	border-bottom:1px dotted black;
+	margin-bottom:15px;
+	padding:5px 0;
+}
+.sent{
+	text-align:left;
+}
+.conversation p{
+	font-size:12px;
+}
+.conversation p.date{
+	font-style:italic;
+}
+#copain{
+	float:right;
+}
+#envoi_message{
+	margin-top:50px;
+}
+#envoi_message textarea{
+	width:100%;
+}

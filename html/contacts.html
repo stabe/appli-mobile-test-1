@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Liste des contacts | Contacts</title>
+<link rel="stylesheet" href="./css/styles.css">
+<link href="https://fonts.googleapis.com/css?family=Raleway:400,400italic,700,700italic" rel="stylesheet" type="text/css">
+<script src="./js/jquery-3.0.0.js"></script>
+<script src="./js/dexie.js"></script>
+<script src="./js/db.js"></script>
+<script src="./js/global.js"></script>
+</head>
+
+<body>
+<h1>Liste des contacts</h1>
+<div id="liste-contacts">
+	<!--<div class="contact" data-id="{id}" data-prenom="{data-prenom}" data-nom="{data-nom}">
+		<h2>{prenom} {nom}</h2>
+		<p class="message">{message}</p>
+		<p class="date">{date}</p>
+	</div>-->
+</div>
+<script>
+var uri = "http://192.168.9.135/contacts.php";
+var parametres = {
+	token : sessionStorage.token
+};
+$.get(uri, parametres )
+	.done(function( data ) {
+		
+		if( data.error ){
+			window.location.href = "./index.html";
+		}
+		
+		// Mise à jour de la BDD : ajout des contacts
+		DB.ajouterContact(data.contacts);
+		
+		// Récupération de la div "template" pour un contact
+		var contacts = $("#liste-contacts").html();
+		// Suppression des commentaires HTML
+		contacts = contacts.replace("<!--", "").replace("-->", "");
+
+		/*var liste_contacts = data.contacts;
+		
+		for(index_contact in liste_contacts){
+			contact = liste_contacts[index_contact];
+			$("#liste-contacts").append(contacts.replace("{id}", contact.id).replace("{prenom}", contact.contact.first_name).replace("{data-prenom}", contact.contact.first_name).replace("{nom}", contact.contact.last_name).replace("{data-nom}", contact.contact.last_name).replace("{message}", contact.message.message).replace("{date}", contact.message.date));
+		}*/
+		
+		// Récupération de la liste des contacts
+		DB.listeContacts(function(liste_contacts){
+			// Pour chaque contact
+			$.each(liste_contacts, function(index_contact, contact){
+				// Affichage des données sur la page
+				$("#liste-contacts").append(contacts.replace("{id}", contact.id).replace("{prenom}", contact.prenom).replace("{data-prenom}", contact.prenom).replace("{nom}", contact.nom).replace("{data-nom}", contact.nom).replace("{message}", contact.message).replace("{date}", contact.date));
+			});
+			// Une fois la liste récupérer, gestion du clic sur chaque contact
+			$(".contact").on("click", function(event){
+				// Mise en session de l'identifiant, nom et prenom du contact
+				sessionStorage.id = ($(this).data("id"));
+				sessionStorage.contact = ($(this).data("prenom")+ " " +$(this).data("nom"));
+				// Redirection vers la page "messages"
+				window.location.href = "./messages.html";
+			});			
+		});		
+	})
+	.fail(function( data, status, erreur ) {
+		window.location.href = "./index.html";
+	});
+</script>
+</body>
+</html>

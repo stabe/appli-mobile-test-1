@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Liste des contacts | Messages</title>
+<link rel="stylesheet" href="./css/styles.css">
+<link href="https://fonts.googleapis.com/css?family=Raleway:400,400italic,700,700italic" rel="stylesheet" type="text/css">
+<script src="./js/jquery-3.0.0.js"></script>
+<script src="./js/jsrender.js"></script>
+<script src="./js/dexie.js"></script>
+<script src="./js/db.js"></script>
+<script src="./js/global.js"></script>
+</head>
+
+<body>
+<div id="retour">
+	<span>&lt;</span><h1>Conversation</h1>
+</div>
+<div id="liste-conversations">	
+	<script id="templateConversations" type="text/x-jsrender">
+		<div class="conversation {{if sent }} sent {{/if}}" data-id="{id}">
+			<p class="message">{{:~nl2br(message)}}</p>
+			<p class="date">{{>date}}</p>
+		</div>
+	</script>
+</div>
+<form method="post" id="envoi_message" action="./messages.html">
+	<textarea></textarea><input type="submit" value="Envoyer" />
+</form>
+<script>
+//var uri = "http://192.168.9.135/messages.php";
+var uri = "http://192.168.43.38/messages.php";
+var parametres = {
+	token : sessionStorage.token,
+	contact : sessionStorage.id
+};
+$.get(uri, parametres )
+	.done(function( data ) {
+		if( data.error ){
+			window.location.href = "./index.html";
+		}
+		
+		DB.ajouterMessage(data.messages, sessionStorage.id);
+		
+		$("h1").text(sessionStorage.contact);
+		
+		//$("#liste-conversations").append($("#templateConversations").render(data.messages));
+		DB.getMessages(sessionStorage.id, function(message){
+			$("#liste-conversations").append($("#templateConversations").render(message));
+			$('html, body').animate({
+				scrollTop: $(".conversation:last").offset().top
+			}, 1000);
+		});
+		
+		
+		
+	})
+	.fail(function( data, status, erreur ) {
+		window.location.href = "./index.html";
+});
+	
+$( "#envoi_message" ).submit(function( event ) {
+	
+	event.preventDefault();
+	
+	//var uri = "http://192.168.9.135/message.php";
+	var uri = "http://192.168.43.38/message.php";
+	var params = {
+		token : sessionStorage.token,
+		contact : sessionStorage.id,
+		message : $("textarea").val()
+	};	
+	
+	$.get( uri, params )
+		.done(function( data ) {
+			if( data.error ){
+				alert("BUGGGGGGGGGGG !");
+				return;
+			}
+			DB.ajouterMessage(data.message, sessionStorage.id);
+			$("#liste-conversations").append($("#templateConversations").render(data.message));
+			$('html, body').animate({
+				scrollTop: $(".conversation:last").offset().top
+			}, 1000);
+			$("textarea").val("");
+		})
+		.fail(function( data, status, erreur ) {
+			alert("Erreur de requête");
+		});
+});
+
+$("#retour").on("click", function(event){
+	window.location.href = "./contacts.html";
+});
+</script>
+</body>
+</html>

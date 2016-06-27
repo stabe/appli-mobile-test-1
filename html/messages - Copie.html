@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Liste des contacts | Messagerie</title>
+<link rel="stylesheet" href="./styles.css">
+<link href="https://fonts.googleapis.com/css?family=Raleway:400,400italic,700,700italic" rel="stylesheet" type="text/css">
+<script src="https://code.jquery.com/jquery-3.0.0.js"></script>
+</head>
+
+<body>
+<h1>Conversation</h1>
+<div id="intervenants">
+	<span>Moi</span>
+	<span id="copain">Copain</span>
+</div>
+<div id="liste-conversations">	
+	<!--<div class="conversation {sent}" data-id="{id}">
+		<p class="message">{message}</p>
+		<p class="date">{date}</p>
+	</div>-->
+</div>
+<script>
+var uri = "http://192.168.9.135/messages.php";
+$.get(uri, {token : sessionStorage.token, contact : sessionStorage.id} )
+	.done(function( data ) {
+		if( data.error ){
+			window.location.href = "./index.html";
+		}
+		
+		$("#copain").text(sessionStorage.contact);
+		
+		// Récupération de la div "template" pour un message
+		var conversations = $("#liste-conversations").html();
+		// Suppression des commentaires HTML
+		conversations = conversations.replace("<!--", "").replace("-->", "");
+		
+		var liste_messages = data.messages;
+		
+		for(index_message in liste_messages){
+			
+			message = liste_messages[index_message];
+			
+			$("#liste-conversations").append(conversations.replace("{id}", message.id).replace("{message}", message.message).replace("{date}", message.date).replace("{sent}", message.sent ? "sent" : ""));
+		
+		}
+		
+	})
+	.fail(function( data, status, erreur ) {
+		window.location.href = "./index.html";
+	});
+</script>
+</body>
+</html>
